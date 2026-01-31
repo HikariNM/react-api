@@ -31,6 +31,15 @@ function App() {
     setMergedList([...actresses, ...actors])
   }
 
+  function getMovies(obj) {
+    if (obj.most_famous_movies) {
+      return obj.most_famous_movies.map((movie, i) => <li className='list-unstyled' key={i}>{movie}</li>)
+    } else if (obj.known_for) {
+      return obj.known_for.map((movie, i) => <li className='list-unstyled' key={i}>{movie}</li>)
+
+    }
+  }
+
   useEffect(getData, []);
 
   useEffect(mergeList, [actresses, actors]);
@@ -48,6 +57,7 @@ function App() {
                 <h3 className="card-title">{person.name}</h3>
                 <p className="card-text fst-italic">{person.birth_year} - {person.nationality}</p>
                 <p className="card-text">{person.biography}</p>
+                <p className="card-text"><span className='fw-medium'>Movies:</span>{getMovies(person)}</p>
                 <p className="card-text"><span className='fw-medium'>Awards:</span> {person.awards}</p>
               </div>
             </div>
