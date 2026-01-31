@@ -6,7 +6,7 @@ import './App.css'
 function App() {
   const [actresses, setActresses] = useState([]);
   const [actors, setActors] = useState([]);
-  const [mergedList, setMergedList] = useState([])
+  const [mergedList, setMergedList] = useState([]);
 
   function getData() {
     const apiUrl = 'https://lanciweb.github.io/demo/api/'
@@ -25,20 +25,28 @@ function App() {
     }).catch(error => {
       console.log('Si è rotto...', error);
     })
-  }
+  };
 
   function mergeList() {
     setMergedList([...actresses, ...actors])
-  }
+  };
 
   function getMovies(obj) {
     if (obj.most_famous_movies) {
-      return obj.most_famous_movies.map((movie, i) => <li className='list-unstyled' key={i}>{movie}</li>)
+      return obj.most_famous_movies.map((movie, i) => <li key={i}>{movie}</li>)
     } else if (obj.known_for) {
-      return obj.known_for.map((movie, i) => <li className='list-unstyled' key={i}>{movie}</li>)
+      return obj.known_for.map((movie, i) => <li key={i}>{movie}</li>)
 
     }
-  }
+  };
+
+  function getAwards(awards) {
+    if (Array.isArray(awards)) {
+      return awards.join(', ')
+    } else {
+      return awards
+    }
+  };
 
   useEffect(getData, []);
 
@@ -57,8 +65,10 @@ function App() {
                 <h3 className="card-title">{person.name}</h3>
                 <p className="card-text fst-italic">{person.birth_year} - {person.nationality}</p>
                 <p className="card-text">{person.biography}</p>
-                <p className="card-text"><span className='fw-medium'>Movies:</span>{getMovies(person)}</p>
-                <p className="card-text"><span className='fw-medium'>Awards:</span> {person.awards}</p>
+                <ul className="card-text list-unstyled"><span className='fw-medium'>Movies:</span>{(person.most_famous_movies || person.known_for).map((movie, i) => <li key={i}>{movie}</li>)}</ul>
+                {/* <ul className="card-text list-unstyled"><span className='fw-medium'>Movies:</span>{getMovies(person)}</ul> */}
+                <p className="card-text"><span className='fw-medium'>Awards:</span> {person.awards ? Array.isArray(person.awards) ? person.awards.join(', ') : person.awards : 'NONE'}</p>
+                {/* <p className="card-text"><span className='fw-medium'>Awards:</span> {getAwards(person.awards)}</p> */}
               </div>
             </div>
           ))}
